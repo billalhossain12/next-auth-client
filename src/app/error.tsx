@@ -9,11 +9,9 @@ export default function GlobalError({
 }) {
   return (
     // global-error must include html and body tags
-    <html>
-      <body>
+      <div>
         <h2>{error.message}</h2>
         <button onClick={() => reset()}>Try again</button>
-      </body>
-    </html>
+      </div>
   );
 }

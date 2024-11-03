@@ -1,6 +1,4 @@
 "use client";
-
-import Hamburger from "hamburger-react";
 import Image from "next/image";
 
 interface AdminHeaderProps {
@@ -18,7 +16,7 @@ const AdminHeader = ({ isOpen, setIsOpen }: AdminHeaderProps) => {
       <h1 onClick={toggleSidebar} className="text-xl font-bold cursor-pointer">
         ProductPulse
         <div className="md:hidden">
-          <Hamburger toggled={isOpen} onToggle={() => setIsOpen(!isOpen)} />
+          <button onClick={toggleSidebar}>Toggle</button>
         </div>
       </h1>
       <div className="flex items-center space-x-4">

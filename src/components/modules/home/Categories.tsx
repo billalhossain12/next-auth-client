@@ -7,7 +7,7 @@ const Categories = async () => {
   await delay(3000);
   const categoriesData = await getAllCategories();
   return (
-    <section className="mb-[5rem]">
+    <section className="mb-[5rem] md:mx-10 mx-5">
       <h1 className="text-[2rem] font-semibold my-[2rem] text-center">
         Popular Categories
       </h1>

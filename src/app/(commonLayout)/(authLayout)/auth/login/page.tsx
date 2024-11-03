@@ -1,24 +1,37 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { FormEvent, useState } from "react";
+import Loading from "@/components/UI/Loading";
+import { useUserLogin } from "@/hooks/auth.hooks";
+import { useRouter } from "next/navigation";
+import { FormEvent, useEffect, useState } from "react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showError, setShowError] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: FormEvent) => {
+  const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!email || !password) {
       return setShowError(true);
     }
-    const userData = {
-      email,
-      password
-    }
-    console.log(userData)
+    const formData = { email, password };
+    handleUserLogin(formData);
   };
 
+  useEffect(() => {
+    if (isSuccess && !isPending) {
+      router.push("/");
+    }
+  }, [isSuccess, isPending, router]);
+
+
   return (
+    <>
+    {isPending && <Loading/>}
     <main className="flex justify-center items-center w-full mt-[3rem]">
       <form
         onSubmit={handleSubmit}
@@ -27,7 +40,8 @@ const Login = () => {
         <h3 className="text-[3rem] font-bold text-gray-700">Login</h3>
         <div>
           <label className="block font-semibold mb-1" htmlFor="email">
-            Email <span className="text-red-500 font-bold text-[1.5rem]">*</span>
+            Email{" "}
+            <span className="text-red-500 font-bold text-[1.5rem]">*</span>
           </label>
           <input
             id="email"
@@ -43,7 +57,8 @@ const Login = () => {
         </div>
         <div>
           <label className="block font-semibold mb-1" htmlFor="password">
-            Password  <span className="text-red-500 font-bold text-[1.5rem]">*</span>
+            Password{" "}
+            <span className="text-red-500 font-bold text-[1.5rem]">*</span>
           </label>
           <input
             id="password"
@@ -64,6 +79,7 @@ const Login = () => {
         </div>
       </form>
     </main>
+    </>
   );
 };
 export default Login;
