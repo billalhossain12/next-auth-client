@@ -15,3 +15,16 @@ export interface TCategory {
   name: string;
   imgUrl: string;
 }
+
+export type TUser = {
+  _id: string;
+  name: string;
+  role: string;
+  email: string;
+  status: string;
+  mobileNumber: string;
+  profilePhoto: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
+};

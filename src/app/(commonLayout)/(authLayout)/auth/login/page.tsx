@@ -1,25 +1,28 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+import CustomForm from "@/components/Form/CustomForm";
+import CustomInput from "@/components/Form/CustomInput";
 import Loading from "@/components/UI/Loading";
+import { useUser } from "@/contexts/user.provider";
 import { useUserLogin } from "@/hooks/auth.hooks";
+import { loginSchema } from "@/schemas/login.schema.";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Icon } from "@iconify/react/dist/iconify.js";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
+import { FieldValues, SubmitHandler } from "react-hook-form";
 
 const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [showError, setShowError] = useState(false);
   const router = useRouter();
+  const [isVisible, setIsVisible] = useState(false);
 
   const { mutate: handleUserLogin, isPending, isSuccess } = useUserLogin();
+  const { setIsLoading } = useUser();
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!email || !password) {
-      return setShowError(true);
-    }
-    const formData = { email, password };
-    handleUserLogin(formData);
+  const handleSubmit: SubmitHandler<FieldValues> = async (data) => {
+    await handleUserLogin(data);
+    setIsLoading(true);
   };
 
   useEffect(() => {
@@ -28,57 +31,63 @@ const Login = () => {
     }
   }, [isSuccess, isPending, router]);
 
-
   return (
     <>
-    {isPending && <Loading/>}
-    <main className="flex justify-center items-center w-full mt-[3rem]">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-[1.5rem] md:w-[500px] w-full"
-      >
-        <h3 className="text-[3rem] font-bold text-gray-700">Login</h3>
-        <div>
-          <label className="block font-semibold mb-1" htmlFor="email">
-            Email{" "}
-            <span className="text-red-500 font-bold text-[1.5rem]">*</span>
-          </label>
-          <input
-            id="email"
-            className="w-full rounded-md p-2 outline-none border-[1px] border-gray-300"
-            type="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {!email && showError && (
-            <p className="text-red-500 text-[14px] font-medium mt-1">
-              Email is required*
-            </p>
-          )}
+      {isPending && <Loading />}
+      <main className="flex justify-center items-center w-full min-h-screen md:p-0 p-3">
+        <div className="md:w-[500px] w-full">
+          <CustomForm
+            onSubmit={handleSubmit}
+            resolver={yupResolver(loginSchema)}
+          >
+            <div className="space-y-[2rem]">
+              <CustomInput
+                type="email"
+                name="email"
+                label="Email"
+                required={true}
+              />
+              <div>
+              <div className="relative">
+                <CustomInput
+                  type={isVisible ? "text" : "password"}
+                  name="password"
+                  label="Password"
+                  required={true}
+                />
+                {isVisible ? (
+                  <Icon
+                    onClick={() => setIsVisible(!isVisible)}
+                    className="text-gray-500 text-[1.5rem] absolute top-[43px] right-3 cursor-pointer"
+                    icon="mdi:eye"
+                  />
+                ) : (
+                  <Icon
+                    onClick={() => setIsVisible(!isVisible)}
+                    className="text-gray-500 text-[1.5rem] absolute top-[43px] right-3 cursor-pointer"
+                    icon="mdi:eye-off"
+                  />
+                )}
+              </div>
+             <Link href="change-password"> <p className="hover:text-gray-800 text-gray-600 hover:font-medium hover:underline text-right mt-1 cursor-pointer">Forgot password?</p></Link>
+              </div>
+              <div>
+                <button className="bg-black text-white px-5 py-2 rounded-md w-full">
+                  Login
+                </button>
+              </div>
+              <div className="flex justify-end gap-1 text-gray-600">
+                <span>Do not have an account?</span>
+                <Link href="/auth/register">
+                  <span className="hover:text-gray-800 hover:font-medium hover:underline">
+                    Register
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </CustomForm>
         </div>
-        <div>
-          <label className="block font-semibold mb-1" htmlFor="password">
-            Password{" "}
-            <span className="text-red-500 font-bold text-[1.5rem]">*</span>
-          </label>
-          <input
-            id="password"
-            className="w-full rounded-md p-2 outline-none border-[1px] border-gray-300"
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {!password && showError && (
-            <p className="text-red-500 text-[14px] font-medium mt-1">
-              Password is required*
-            </p>
-          )}
-        </div>
-        <div className="flex justify-end">
-          <button className="bg-gray-700 text-white px-10 py-2 rounded-md font-bold">
-            Login
-          </button>
-        </div>
-      </form>
-    </main>
+      </main>
     </>
   );
 };

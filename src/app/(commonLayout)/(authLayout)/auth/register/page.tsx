@@ -1,103 +1,87 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { FormEvent, useState } from "react";
+import CustomForm from "@/components/Form/CustomForm";
+import CustomInput from "@/components/Form/CustomInput";
+import Loading from "@/components/UI/Loading";
+import { useUserRegister } from "@/hooks/auth.hooks";
+import { registerSchema } from "@/schemas/register.schema";
+import { yupResolver } from "@hookform/resolvers/yup";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { FieldValues, SubmitHandler } from "react-hook-form";
 
-const Register = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [showError, setShowError] = useState(false);
+const Login = () => {
+  const router = useRouter();
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    if (!email || !password || !firstName) {
-      return setShowError(true);
-    }
-    const userData = {
-      email,
-      password,
-      firstName,
-      lastName,
-    };
-    console.log(userData);
+  const {
+    mutate: handleUserRegister,
+    isPending,
+    isSuccess,
+  } = useUserRegister();
+
+  const handleSubmit: SubmitHandler<FieldValues> = async (data) => {
+    handleUserRegister(data);
   };
 
+  useEffect(() => {
+    if (isSuccess && !isPending) {
+      router.push("/");
+    }
+  }, [isSuccess, isPending, router]);
+
   return (
-    <main className="flex justify-center items-center w-full mt-[3rem]">
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-[1.5rem] md:w-[500px] w-full"
-      >
-        <h3 className="text-[3rem] font-bold text-gray-700">Login</h3>
-        <div>
-          <label className="block font-semibold mb-1" htmlFor="fname">
-            First Name{" "}
-            <span className="text-red-500 font-bold text-[1.5rem]">*</span>
-          </label>
-          <input
-            id="fname"
-            className="w-full rounded-md p-2 outline-none border-[1px] border-gray-300"
-            type="text"
-            onChange={(e) => setFirstName(e.target.value)}
-          />
-          {!firstName && showError && (
-            <p className="text-red-500 text-[14px] font-medium mt-1">
-              First name is required*
-            </p>
-          )}
+    <>
+      {isPending && <Loading />}
+      <main className="flex justify-center items-center w-full min-h-screen md:p-0 p-3">
+        <div className="md:w-[500px] w-full">
+          <CustomForm
+            onSubmit={handleSubmit}
+            resolver={yupResolver(registerSchema)}
+          >
+            <div className="space-y-[2rem]">
+              <CustomInput
+                type="text"
+                name="name"
+                label="Name"
+                required={true}
+              />
+              <CustomInput
+                type="text"
+                name="mobileNumber"
+                label="Mobile Number"
+                required={false}
+              />
+              <CustomInput
+                type="email"
+                name="email"
+                label="Email"
+                required={true}
+              />
+              <CustomInput
+                type="password"
+                name="password"
+                label="Password"
+                required={true}
+              />
+              <div>
+                <button className="bg-black text-white px-5 py-2 rounded-md w-full">
+                  Register
+                </button>
+              </div>
+              <div className="flex justify-end gap-1 text-gray-600">
+                <span>Already have an account?</span>
+                <Link href="/auth/login">
+                  <span className="hover:text-gray-800 hover:font-medium hover:underline">
+                    Login
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </CustomForm>
         </div>
-        <div>
-          <label className="block font-semibold mb-1" htmlFor="lname">
-            Last Name
-          </label>
-          <input
-            id="lname"
-            className="w-full rounded-md p-2 outline-none border-[1px] border-gray-300"
-            type="text"
-            onChange={(e) => setLastName(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block font-semibold mb-1" htmlFor="email">
-            Email{" "}
-            <span className="text-red-500 font-bold text-[1.5rem]">*</span>
-          </label>
-          <input
-            id="email"
-            className="w-full rounded-md p-2 outline-none border-[1px] border-gray-300"
-            type="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          {!email && showError && (
-            <p className="text-red-500 text-[14px] font-medium mt-1">
-              Email is required*
-            </p>
-          )}
-        </div>
-        <div>
-          <label className="block font-semibold mb-1" htmlFor="password">
-            Password{" "}
-            <span className="text-red-500 font-bold text-[1.5rem]">*</span>
-          </label>
-          <input
-            id="password"
-            className="w-full rounded-md p-2 outline-none border-[1px] border-gray-300"
-            type="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          {!password && showError && (
-            <p className="text-red-500 text-[14px] font-medium mt-1">
-              Password is required*
-            </p>
-          )}
-        </div>
-        <div className="flex justify-end">
-          <button className="bg-gray-700 text-white px-10 py-2 rounded-md font-bold">
-            Login
-          </button>
-        </div>
-      </form>
-    </main>
+      </main>
+    </>
   );
 };
-export default Register;
+export default Login;

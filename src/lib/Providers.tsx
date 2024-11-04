@@ -1,4 +1,5 @@
 "use client";
+import UserProvider from "@/contexts/user.provider";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactNode } from "react";
 import { ToastContainer } from "react-toastify";
@@ -9,7 +10,7 @@ const queryClient = new QueryClient();
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
+      <UserProvider>{children}</UserProvider>
       <ToastContainer />
     </QueryClientProvider>
   );
