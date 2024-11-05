@@ -10,11 +10,11 @@ interface AdminLayoutProps {
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [isOpen, setIsOpen] = useState(false);
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col pt-[5rem]">
       <AdminHeader isOpen={isOpen} setIsOpen={setIsOpen} />
       <div className="flex flex-1">
         <AdminSidebar isOpen={isOpen} setIsOpen={setIsOpen}/>
-        <main className="flex-1 p-6 ml-0 md:ml-64 transition-all duration-300">
+        <main className="flex-1 md:p-6 p-3 ml-0 md:ml-64 transition-all duration-300 overflow-x-hidden">
           {children}
         </main>
       </div>

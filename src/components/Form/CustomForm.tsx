@@ -29,11 +29,14 @@ export default function CustomForm({
 
   const methods = useForm(formConfig);
 
+  const submit = (data: any) => {
+    onSubmit(data);
+    // methods.reset();
+  };
+
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        {children}
-      </form>
+      <form onSubmit={methods.handleSubmit(submit)}>{children}</form>
     </FormProvider>
   );
 }

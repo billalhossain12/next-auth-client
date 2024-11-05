@@ -10,6 +10,6 @@ export async function getAllCategories() {
     const data: { data: TCategory[] } = await response.json();
     return data.data;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error?.response?.data?.message);
   }
 }

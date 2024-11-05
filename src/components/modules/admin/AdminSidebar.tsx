@@ -14,7 +14,7 @@ const AdminSidebar = ({ isOpen, setIsOpen }: AdminSidebarProps) => {
     <aside
       className={`fixed left-0 h-full bg-gray-800 text-white transition-transform duration-300 pb-[15rem] overflow-y-auto ${
         isOpen ? "translate-x-0" : "-translate-x-full"
-      } md:translate-x-0 md:w-64`}
+      } md:translate-x-0 md:w-64 pt-[1rem]`}
     >
       <nav className="mt-5">
         <ul className="space-y-5">

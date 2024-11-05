@@ -12,7 +12,7 @@ const AdminHeader = ({ isOpen, setIsOpen }: AdminHeaderProps) => {
   };
 
   return (
-    <header className="bg-gray-800 text-white flex items-center justify-between p-4 shadow-md">
+    <header className="bg-gray-800 text-white flex items-center justify-between p-4 shadow-md fixed top-0 w-full z-[999]">
       <h1 onClick={toggleSidebar} className="text-xl font-bold cursor-pointer">
         ProductPulse
         <div className="md:hidden">

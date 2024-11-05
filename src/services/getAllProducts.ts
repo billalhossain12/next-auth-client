@@ -10,6 +10,6 @@ export async function getAllProducts() {
     const data: { data: TProduct[] } = await response.json();
     return data.data;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(error?.response?.data?.message);
   }
 }

@@ -3,6 +3,7 @@
 import CustomForm from "@/components/Form/CustomForm";
 import CustomInput from "@/components/Form/CustomInput";
 import Loading from "@/components/UI/Loading";
+import { useUser } from "@/contexts/user.provider";
 import { useUserRegister } from "@/hooks/auth.hooks";
 import { registerSchema } from "@/schemas/register.schema";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -19,9 +20,11 @@ const Login = () => {
     isPending,
     isSuccess,
   } = useUserRegister();
+  const { setIsLoading } = useUser();
 
   const handleSubmit: SubmitHandler<FieldValues> = async (data) => {
-    handleUserRegister(data);
+    await handleUserRegister(data);
+    setIsLoading(true);
   };
 
   useEffect(() => {
