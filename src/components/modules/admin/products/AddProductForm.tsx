@@ -4,7 +4,12 @@ import { FieldValues, SubmitHandler } from "react-hook-form";
 import CustomForm from "@/components/Form/CustomForm";
 import CustomInput from "@/components/Form/CustomInput";
 import CustomTextArea from "@/components/Form/CustomTextArea";
-import CustomSelect from "@/components/Form/CustomSelect";
+import dynamic from 'next/dynamic';
+
+// Dynamically import react-select to avoid SSR issues
+const CustomSelect = dynamic(() => import("@/components/Form/CustomSelect"), { ssr: false });
+
+// import CustomSelect from "@/components/Form/CustomSelect";
 import { addProductSchema } from "@/schemas/addProduct.schema";
 import { useCreateProduct } from "@/hooks/product.hooks";
 import Loading from "@/components/UI/Loading";
@@ -19,7 +24,14 @@ export default function AddProductForm() {
   const { mutate: handleCreateProductApi, isPending } = useCreateProduct();
   const handleSubmit: SubmitHandler<FieldValues> = (data) => {
     console.log("Submitted form data ===> ", data);
-    handleCreateProductApi(data);
+    const modifiedData = {
+      ...data,
+      price: Number(data.price),
+      rating: Number(data.rating),
+      stock: Number(data.stock),
+      category: data.category.value,
+    };
+    handleCreateProductApi(modifiedData);
   };
   return (
     <>
@@ -82,7 +94,6 @@ export default function AddProductForm() {
               label="Category"
               required={true}
               options={productCategoryOptions}
-              placeholder="Select product location"
             />
             <div className="md:col-span-2 flex justify-end">
               <button className="bg-primary px-[3rem] py-[0.5rem] bg-black text-white">

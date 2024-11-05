@@ -27,3 +27,14 @@ export const createProduct = async (productData: FieldValues) => {
     throw new Error(error?.response?.data?.message);
   }
 };
+
+export const deleteProduct = async (productId: string) => {
+  try {
+    const res = await axiosInstance.delete(
+      `${envConfig.baseApi}/products/delete-product/${productId}`
+    );
+    return res.data.data;
+  } catch (error: any) {
+    throw new Error(error?.response?.data?.message);
+  }
+};
